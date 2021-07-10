@@ -3,7 +3,7 @@
  *
  * @param {H5P.jQuery} $
  */
-H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
+ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
  
   /**
    * Creates code snippet.
@@ -21,6 +21,8 @@ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
     this.params = params;
     this.setValue = setValue;
     this.editor = null;
+
+    this.changes = [];
   }
     
   /**
@@ -30,6 +32,7 @@ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
    */
   C.prototype.appendTo = function ($wrapper) {
     var self = this;
+
     self.$container = $('<div>', {
       'class': 'field text h5p-code-snippet'
     });
@@ -42,7 +45,6 @@ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
  
     // Create input field
     self.$codeSnippet = $('<div>', {
-      'id': 'code-snippet-editor',
       'class': 'h5p-code-snippet'
     }).appendTo(self.$container);
 
@@ -56,6 +58,16 @@ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
     
     // Add Ace Editor to $codeSnippet
     self.editor = ace.edit(self.$codeSnippet.get(0));
+
+    // set value on hange
+    self.editor.session.on('change', function(delta) {
+      self.params = self.editor.getValue();
+      self.setValue(self.field, self.params);
+
+      self.changes.forEach(function (cb) {
+        cb(self.params);
+      })
+    });    
   };
   
   /**
@@ -64,7 +76,8 @@ H5PEditor.widgets.codeSnippet = H5PEditor.CodeSnippet = (function ($) {
    * @returns {boolean}
    */
   C.prototype.validate = function () {
-    return (this.params.length > 1);
+    console.log(this);
+    return (this.params !== undefined && this.params.length !== 0);
   };
   
   /**

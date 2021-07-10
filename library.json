@@ -14,5 +14,10 @@
       {
         "path": "scripts/code-snippet.js"
       }
+    ],
+    "preloadedCss": [
+      {
+        "path": "styles/code-snippet.css"
+      }
     ]
   }
