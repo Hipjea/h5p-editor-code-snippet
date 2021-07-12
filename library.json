@@ -2,7 +2,7 @@
     "title": "H5PEditor.CodeSnippet",
     "majorVersion": 1,
     "minorVersion": 0,
-    "patchVersion": 4,
+    "patchVersion": 5,
     "runnable": 0,
     "machineName": "H5PEditor.CodeSnippet",
     "author": "Pierre Duverneix",
@@ -10,6 +10,9 @@
     "preloadedJs": [
       {
         "path": "node_modules/ace-builds/src/ace.js"
+      },
+      {
+        "path": "node_modules/ace-builds/src-noconflict/theme-github.js"
       },
       {
         "path": "scripts/code-snippet.js"
