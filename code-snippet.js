@@ -24,7 +24,7 @@
 
     this.changes = [];
   }
-    
+
   /**
    * Append the field to the wrapper.
    *
@@ -32,7 +32,7 @@
    */
   C.prototype.appendTo = function ($wrapper) {
     var self = this;
-
+    
     self.$container = $('<div>', {
       'class': 'field text h5p-code-snippet'
     });
@@ -44,9 +44,11 @@
     }).appendTo(self.$container);
  
     // Create input field
-    self.$codeSnippet = $('<div>', {
+    self.$codeSnippet = $('<textarea>', {
       'class': 'h5p-code-snippet'
-    }).appendTo(self.$container);
+    })
+    .val(self.htmlDecode(this.params))
+    .appendTo(self.$container);
 
     // Add description:
     $('<span>', {
@@ -56,18 +58,33 @@
    
     self.$container.appendTo($wrapper);
     
-    // Add Ace Editor to $codeSnippet
-    self.editor = ace.edit(self.$codeSnippet.get(0));
+    // Add CodeMirror to $codeSnippet
+    self.editor = CodeMirror.fromTextArea(self.$codeSnippet.get(0), {
+      readOnly: false,
+      autofocus: false,
+      smartIndent: true,
+      indentUnit: 4,
+      indentWithTabs: true,
+      lineWrapping: true,
+      foldGutter: true,
+      autofocus: true,
+      matchBrackets: true,
+      autoCloseBrackets: true,
+      styleActiveLine: true,
+      lineNumbers: true
+    });
 
-    // set value on hange
-    self.editor.session.on('change', function(delta) {
-      self.params = self.editor.getValue();
+    self.editor.refresh();
+
+    // set value on change
+    self.editor.on('change', function(doc, delta) {
+      self.params = doc.getValue();
       self.setValue(self.field, self.params);
 
       self.changes.forEach(function (cb) {
         cb(self.params);
       })
-    });    
+    });
   };
   
   /**
@@ -76,7 +93,6 @@
    * @returns {boolean}
    */
   C.prototype.validate = function () {
-    console.log(this);
     return (this.params !== undefined && this.params.length !== 0);
   };
   
@@ -88,6 +104,13 @@
     self.editor.destroy();
     self.editor.container.remove();
   };
+
+  C.prototype.htmlDecode = function(input) {
+    var element = document.createElement('textarea');
+    element.innerHTML = input;
+    return element.childNodes.length === 0 ? "" : element.childNodes[0].nodeValue;
+  }
+  
   
   return C;
 })(H5P.jQuery);
