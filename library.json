@@ -11,6 +11,9 @@
       {
         "path": "node_modules/codemirror/lib/codemirror.js"
       },
+      { 
+          "path": "node_modules/codemirror/mode/sql/sql.js" 
+      },
       {
         "path": "code-snippet.js"
       }
